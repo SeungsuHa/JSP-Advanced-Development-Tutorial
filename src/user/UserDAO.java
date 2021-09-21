@@ -1,44 +1,48 @@
 package user;
-
+ 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+ 
+ 
 public class UserDAO {
-
-	private Connection conn;
-	private PreparedStatement pstmt;
-	private ResultSet rs;
-
-	public UserDAO() {
+    
+    private Connection conn;            // DBÏóê Ï†ëÍ∑ºÌïòÎäî Í∞ùÏ≤¥
+    private PreparedStatement pstmt;    // 
+    private ResultSet rs;                // DB dataÎ•º Îã¥ÏùÑ Ïàò ÏûàÎäî Í∞ùÏ≤¥  (Ctrl + shift + 'o') -> auto import
+    
+    public UserDAO() {
 		try {
-			String dbURL = "dbc:mysql://localhost:3306/BBS?serverTimezone=UTC";
+			String dbURL = "jdbc:mysql://localhost:3306/BBS?serverTimezone=UTC";
 			String dbID = "root";
 			String dbPassword = "root";
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(dbURL, dbID, dbPassword);
-		} catch (Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-
-	public int login(String userID, String userPassword) {
-		String SQL = "SELECT userPassword FROM USER WHERE userID = ?";
-		try {
-			pstmt = conn.prepareStatement(SQL);
-			pstmt.setString(1, userID);
-			rs = pstmt.executeQuery();
-			if (rs.next()) {
-				if (rs.getString(1).equals(userPassword))
-					return 1; // ∑Œ±◊¿Œ º∫∞¯
-				else
-					return 0; // ∫Òπ–π¯»£ ∫“¿œƒ°
-			}
-			return -1; // æ∆¿Ãµ∞° æ¯¿Ω
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -2; // µ•¿Ã≈Õ∫£¿ÃΩ∫ ø¿∑˘
-	}
+    
+    public int login(String userID, String userPassword) {
+        String SQL = "SELECT userPassword FROM USER WHERE userID = ?";
+        try {
+            pstmt = conn.prepareStatement(SQL);
+            pstmt.setString(1, userID);
+            rs = pstmt.executeQuery();
+            if(rs.next()){
+                if(rs.getString(1).equals(userPassword))
+                    return 1;    // Î°úÍ∑∏Ïù∏ ÏÑ±Í≥µ
+                else
+                    return 0; // ÎπÑÎ∞ÄÎ≤àÌò∏ Î∂àÏùºÏπò
+            }
+            return -1; // IDÍ∞Ä ÏóÜÏùå
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -2; // DB Ïò§Î•ò
+        
+    }
+ 
 }
